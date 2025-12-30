@@ -1,10 +1,23 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AppLayout } from './app-layout';
-import { MessageSquare, Shield, Globe, Zap, CheckCircle2, Users } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AppLayout } from "./app-layout";
+import {
+  MessageSquare,
+  Shield,
+  Globe,
+  Zap,
+  CheckCircle2,
+  Users,
+} from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -16,7 +29,8 @@ export default function LandingPage() {
               Get Instant Help for Your Device Issues
             </h1>
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Safe, step-by-step guidance with expert sources. No risky commands.
+              Safe, step-by-step guidance with expert sources. No risky
+              commands.
               <br />
               We prioritize your privacy and security every step of the way.
             </p>
@@ -27,7 +41,11 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <Link href="/knowledge">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto text-lg px-8"
+                >
                   Browse Knowledge Base
                 </Button>
               </Link>
@@ -37,7 +55,9 @@ export default function LandingPage() {
 
         <section className="container py-16 border-t">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Why Choose FixMate?</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Why Choose FixMate?
+            </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <Card>
                 <CardHeader>
@@ -46,7 +66,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    We never auto-run commands. Every action requires your explicit consent, protecting your device and data.
+                    We never auto-run commands. Every action requires your
+                    explicit consent, protecting your device and data.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -58,7 +79,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    Every solution includes citations and a confidence meter, so you know exactly where the guidance comes from.
+                    Every solution includes citations and a confidence meter, so
+                    you know exactly where the guidance comes from.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -70,7 +92,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    Get help in your language. Currently supporting English and Hindi, with more languages coming soon.
+                    Get help in your language. Currently supporting English and
+                    Hindi, with more languages coming soon.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -82,7 +105,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    Type your issue and get step-by-step guidance immediately. If we can't solve it, reach a human expert easily.
+                    Type your issue and get step-by-step guidance immediately.
+                    If we can't solve it, reach a human expert easily.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -94,7 +118,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    Built-in redaction tools ensure sensitive information stays private during support sessions.
+                    Built-in redaction tools ensure sensitive information stays
+                    private during support sessions.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -106,7 +131,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
-                    Fleet management, custom policies, and comprehensive analytics for organizations of any size.
+                    Fleet management, custom policies, and comprehensive
+                    analytics for organizations of any size.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -119,7 +145,8 @@ export default function LandingPage() {
             <MessageSquare className="h-16 w-16 mx-auto mb-6 text-primary" />
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Join thousands of users who trust FixMate for their device support needs.
+              Join thousands of users who trust FixMate for their device support
+              needs.
             </p>
             <Link href="/help">
               <Button size="lg" className="text-lg px-8">
@@ -129,10 +156,68 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <footer className="border-t py-8 mt-16">
+        <footer className="border-t py-10 mt-16">
           <div className="container">
-            <p className="text-center text-sm text-muted-foreground">
-              MVP Demo - Mock data only. Full backend integration coming soon.
+            <div className="grid gap-8 md:grid-cols-2 items-start">
+              {/* Existing footer text */}
+              <p className="text-sm text-muted-foreground">
+                MVP Demo - Mock data only. Full backend integration coming soon.
+              </p>
+
+              {/* Contact details */}
+              <div className="space-y-3 md:text-right">
+                <p className="text-sm font-medium">Contact</p>
+
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>
+                    Mail Us:{" "}
+                    <a
+                      href="mailto:info@raceinnovations.in"
+                      className="underline underline-offset-4 hover:text-foreground"
+                    >
+                      info@raceinnovations.in
+                    </a>
+                  </p>
+
+                  <p>
+                    Call Us:{" "}
+                    <a
+                      href="tel:+914466108114"
+                      className="underline underline-offset-4 hover:text-foreground"
+                    >
+                      +91 44 66108114
+                    </a>{" "}
+                    /{" "}
+                    <a
+                      href="tel:+918072098352"
+                      className="underline underline-offset-4 hover:text-foreground"
+                    >
+                      +91 8072098352
+                    </a>
+                  </p>
+
+                  <p>
+                    WhatsApp:{" "}
+                    <a
+                      href="https://wa.me/919003031527"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline underline-offset-4 hover:text-foreground"
+                    >
+                      +91 9003031527
+                    </a>
+                  </p>
+
+                  <p className="leading-relaxed">
+                    Address: Olympia Platina, Guindy, Chennai 600032, TN
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Optional: bottom centered line */}
+            <p className="mt-8 text-center text-xs text-muted-foreground">
+              © {new Date().getFullYear()} FixMate
             </p>
           </div>
         </footer>

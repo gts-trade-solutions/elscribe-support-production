@@ -1,0 +1,18 @@
+"use client";
+
+import { RouteError } from "@/components/route-error";
+
+export default function Error({
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <RouteError
+      title="Could not load agent console"
+      description="There was a problem loading the agent console."
+      reset={reset}
+    />
+  );
+}

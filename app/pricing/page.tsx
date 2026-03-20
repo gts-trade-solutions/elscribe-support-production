@@ -1,157 +1,217 @@
-'use client';
+import Link from "next/link";
+import { AppLayout } from "../app-layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  Check,
+  ShieldCheck,
+  Building2,
+  Ticket,
+} from "lucide-react";
+import {
+  formatIncidentPrice,
+  getCompanyPlanCatalog,
+  getIncidentCatalog,
+} from "@/lib/billing/pricing";
 
-import { AppLayout } from '../app-layout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Check } from 'lucide-react';
-
-const plans = [
-  {
-    name: 'Free',
-    price: '$0',
-    period: 'forever',
-    description: 'Perfect for individual users',
-    features: [
-      'Instant help chat',
-      'Knowledge base access',
-      'Community support',
-      'Basic troubleshooting',
-      '5 tickets per month',
-    ],
-    cta: 'Get Started',
-    popular: false,
-  },
-  {
-    name: 'Pro',
-    price: '$19',
-    period: 'per month',
-    description: 'For power users and professionals',
-    features: [
-      'Everything in Free',
-      'Priority support',
-      'Screen sharing sessions',
-      'Unlimited tickets',
-      'Advanced diagnostics',
-      '24/7 agent availability',
-    ],
-    cta: 'Start Free Trial',
-    popular: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: 'contact us',
-    description: 'For organizations and teams',
-    features: [
-      'Everything in Pro',
-      'Fleet management dashboard',
-      'Custom policies',
-      'Dedicated support team',
-      'SSO integration',
-      'Advanced analytics',
-      'SLA guarantees',
-      'Custom integrations',
-    ],
-    cta: 'Contact Sales',
-    popular: false,
-  },
+const includedItems = [
+  "Ticket-based support history",
+  "Realtime chat in support sessions",
+  "Voice/video escalation after billing clears",
+  "Paid company plans include all incident types without per-ticket checkout",
+  "Company seat and invite model",
+  "Alias-safe agent handling",
+  "Clear public incident pricing",
 ];
 
 export default function PricingPage() {
+  const incidentPricing = getIncidentCatalog();
+  const companyPlans = getCompanyPlanCatalog();
+
   return (
     <AppLayout>
       <div className="container py-12">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
-            <p className="text-lg text-muted-foreground">
-              Choose the plan that's right for you. No hidden fees.
+        <div className="mx-auto max-w-7xl space-y-16">
+          <div className="mx-auto max-w-3xl text-center">
+            <Badge variant="secondary" className="mb-4">
+              Transparent support pricing
+            </Badge>
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+              Clear incident pricing for every support path
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Start with a single incident or choose a monthly redundancy plan.
+              Every path still leads into the same ticket-first eLscribe support
+              workflow.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {plans.map((plan) => (
-              <Card
-                key={plan.name}
-                className={`relative flex flex-col ${
-                  plan.popular ? 'border-primary shadow-lg scale-105' : ''
-                }`}
-              >
-                {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    Most Popular
-                  </Badge>
-                )}
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    {plan.period !== 'contact us' && (
-                      <span className="text-muted-foreground ml-2">/ {plan.period}</span>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <ul className="space-y-3">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    className="w-full"
-                    variant={plan.popular ? 'default' : 'outline'}
-                    size="lg"
-                  >
-                    {plan.cta}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center">
-            <h2 className="text-2xl font-semibold mb-4">All Plans Include</h2>
-            <div className="grid md:grid-cols-4 gap-6 mt-8">
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="font-medium mb-2">Privacy First</p>
-                  <p className="text-sm text-muted-foreground">
-                    Built-in redaction and data protection
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="font-medium mb-2">Multilingual</p>
-                  <p className="text-sm text-muted-foreground">
-                    Support in multiple languages
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="font-medium mb-2">Trusted Sources</p>
-                  <p className="text-sm text-muted-foreground">
-                    Citations and confidence ratings
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="font-medium mb-2">Safe Actions</p>
-                  <p className="text-sm text-muted-foreground">
-                    Consent-based command execution
-                  </p>
-                </CardContent>
-              </Card>
+          <section className="space-y-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 className="text-3xl font-bold">
+                  Per-incident human support
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Fixed-price incidents use upfront USD billing. Server repair
+                  is quoted after technician review.
+                </p>
+              </div>
+              <Badge variant="outline">USD only</Badge>
             </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {incidentPricing.map((item) => {
+                const href = `/tickets/new?incidentType=${encodeURIComponent(item.code)}`;
+                return (
+                  <Card key={item.code} className="border-border/60">
+                    <CardHeader className="pb-3">
+                      <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border bg-muted/40">
+                        <Ticket className="h-5 w-5" />
+                      </div>
+                      <CardTitle className="text-lg">{item.label}</CardTitle>
+                      <CardDescription>{item.helper}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-3xl font-bold">
+                          {formatIncidentPrice(item)}
+                        </span>
+                        <Badge
+                          variant={
+                            item.pricingModel === "quoted"
+                              ? "destructive"
+                              : "secondary"
+                          }
+                        >
+                          {item.pricingModel === "quoted"
+                            ? "Quoted"
+                            : "Incident"}
+                        </Badge>
+                      </div>
+
+                      <Link href={href}>
+                        <Button className="w-full">
+                          Start this incident
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 className="text-3xl font-bold">
+                  Monthly MSP redundancy plans
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Flat monthly pricing by company size. Paid company plans
+                  include all incident types without per-ticket checkout, while
+                  still enforcing seat entitlements and fair-usage ticket
+                  allowances.
+                </p>
+              </div>
+              <Badge variant="outline">Company coverage</Badge>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {companyPlans.map((plan) => (
+                <Card key={plan.code} className="flex flex-col">
+                  <CardHeader>
+                    <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border bg-muted/40">
+                      <Building2 className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-xl">{plan.name}</CardTitle>
+                    <CardDescription>{plan.employees}</CardDescription>
+                    <div className="pt-3 text-4xl font-bold">
+                      {plan.priceLabel}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 space-y-3">
+                    {[
+                      "Flat monthly company pricing",
+                      `Supports up to ${plan.seatLimit} seats in the paid band`,
+                      `Fair usage up to ${plan.fairUsageTicketLimit} tickets per billing cycle`,
+                      "Company owner seat control",
+                      "All incident types included without per-ticket checkout",
+                      "Ticket-first support workflow",
+                    ].map((feature) => (
+                      <div
+                        key={feature}
+                        className="flex items-start gap-2 text-sm"
+                      >
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+
+                    <Link href="/settings/company-users" className="block pt-2">
+                      <Button variant="outline" className="w-full">
+                        Prepare company access
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border bg-muted/20 p-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div>
+                <h3 className="text-2xl font-bold">What every plan supports</h3>
+                <p className="mt-3 text-muted-foreground">
+                  Whether support starts as a single incident or a company plan,
+                  the product still routes through the same ticket-first support
+                  flow.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {includedItems.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl border bg-background p-4 text-sm"
+                  >
+                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link href="/tickets/new">
+                <Button size="lg">
+                  Start with a new ticket
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/settings/company-users">
+                <Button size="lg" variant="outline">
+                  Manage company access
+                </Button>
+              </Link>
+            </div>
+          </section>
+
+          <div className="text-center text-sm text-muted-foreground">
+            Incident and company plan pricing are modeled in USD across the
+            product. Razorpay checkout is temporarily running in INR only for
+            testing the payment processor path.
           </div>
         </div>
       </div>

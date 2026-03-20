@@ -1,13 +1,28 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { AppProvider } from '@/components/app-provider';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { AppProvider } from "@/components/app-provider";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'FixMate - Instant Device Support',
-  description: 'Get safe, step-by-step guidance for your device issues with expert sources and confidence ratings.',
+  title: {
+    default: "eLscribe | Ticket-first IT support",
+    template: "%s | eLscribe",
+  },
+  description:
+    "eLscribe is a ticket-first IT support workspace for chat, live escalation, company access control, and incident-based support operations.",
+  applicationName: "eLscribe",
+  keywords: [
+    "eLscribe",
+    "IT support",
+    "ticketing",
+    "live support",
+    "voice support",
+    "video support",
+    "incident support",
+    "company seats",
+  ],
 };
 
 export default function RootLayout({
@@ -18,9 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AppProvider>
-          {children}
-        </AppProvider>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );

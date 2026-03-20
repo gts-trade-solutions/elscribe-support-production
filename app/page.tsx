@@ -1,6 +1,5 @@
-"use client";
-
 import Link from "next/link";
+import { AppLayout } from "./app-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,218 +8,183 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AppLayout } from "./app-layout";
 import {
+  ArrowRight,
+  Building2,
+  CreditCard,
+  Headset,
   MessageSquare,
-  Shield,
-  Globe,
-  Zap,
-  CheckCircle2,
-  Users,
+  ShieldCheck,
+  Video,
 } from "lucide-react";
+
+const features = [
+  {
+    title: "Ticket-first support workflow",
+    description:
+      "Every support journey starts with a ticket so chat, call requests, billing, and audit history stay attached to the same case.",
+    icon: MessageSquare,
+  },
+  {
+    title: "Realtime escalation",
+    description:
+      "Move from text chat to voice, video, and screen share without leaving the support session.",
+    icon: Video,
+  },
+  {
+    title: "Company seat control",
+    description:
+      "Owners can invite users and manage seat limits, while members stay scoped to the tickets they created.",
+    icon: Building2,
+  },
+  {
+    title: "Incident-aware billing",
+    description:
+      "Support pricing, payment gating, and incident selection are built directly into the support flow.",
+    icon: CreditCard,
+  },
+  {
+    title: "Alias-only agent experience",
+    description:
+      "Agents work from ticket aliases instead of exposed customer profile details in agent-facing views.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Built for support operations",
+    description:
+      "Queue, console, handoff, ticket chat, and live-session workflows are designed for day-to-day support execution.",
+    icon: Headset,
+  },
+];
 
 export default function LandingPage() {
   return (
     <AppLayout>
       <div className="flex flex-col">
-        <section className="container py-20 md:py-32">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Get Instant Help for Your Device Issues
+        <section className="container py-20 md:py-28">
+          <div className="mx-auto max-w-5xl text-center">
+            <div className="mx-auto mb-6 inline-flex items-center rounded-full border px-4 py-1.5 text-sm text-muted-foreground">
+              Ticket-first IT support workspace
+            </div>
+
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+              Human IT support that moves from handoff to resolution in one
+              workflow.
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Safe, step-by-step guidance with expert sources. No risky
-              commands.
-              <br />
-              We prioritize your privacy and security every step of the way.
+
+            <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground sm:text-xl">
+              eLscribe connects customer handoff, tickets, realtime chat,
+              voice/video escalation, company access control, and incident-based
+              billing in a single application.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/help">
-                <Button size="lg" className="w-full sm:w-auto text-lg px-8">
-                  Start Instant Help
+
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link href="/tickets">
+                <Button size="lg" className="w-full px-8 text-lg sm:w-auto">
+                  Open tickets
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/knowledge">
+
+              <Link href="/pricing">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto text-lg px-8"
+                  className="w-full px-8 text-lg sm:w-auto"
                 >
-                  Browse Knowledge Base
+                  View pricing
                 </Button>
               </Link>
             </div>
           </div>
         </section>
 
-        <section className="container py-16 border-t">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Why Choose FixMate?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card>
-                <CardHeader>
-                  <Shield className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Safety First</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    We never auto-run commands. Every action requires your
-                    explicit consent, protecting your device and data.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CheckCircle2 className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Trustworthy Sources</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Every solution includes citations and a confidence meter, so
-                    you know exactly where the guidance comes from.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <Globe className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Multilingual</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Get help in your language. Currently supporting English and
-                    Hindi, with more languages coming soon.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <Zap className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Instant Answers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Type your issue and get step-by-step guidance immediately.
-                    If we can't solve it, reach a human expert easily.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <Shield className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Privacy Protected</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Built-in redaction tools ensure sensitive information stays
-                    private during support sessions.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <Users className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Enterprise Ready</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Fleet management, custom policies, and comprehensive
-                    analytics for organizations of any size.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        <section className="container py-16 border-t">
-          <div className="mx-auto max-w-3xl text-center">
-            <MessageSquare className="h-16 w-16 mx-auto mb-6 text-primary" />
-            <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Join thousands of users who trust FixMate for their device support
-              needs.
-            </p>
-            <Link href="/help">
-              <Button size="lg" className="text-lg px-8">
-                Try It Now
-              </Button>
-            </Link>
-          </div>
-        </section>
-
-        <footer className="border-t py-10 mt-16">
+        <section className="border-t py-16">
           <div className="container">
-            <div className="grid gap-8 md:grid-cols-2 items-start">
-              {/* Existing footer text */}
-              <p className="text-sm text-muted-foreground">
-                MVP Demo - Mock data only. Full backend integration coming soon.
+            <div className="mx-auto mb-12 max-w-3xl text-center">
+              <h2 className="text-3xl font-bold">
+                Everything stays aligned to the real product flow
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                The frontend now centers only the implemented support journey:
+                tickets, queue, console, billing, and live escalation.
               </p>
-
-              {/* Contact details */}
-              <div className="space-y-3 md:text-right">
-                <p className="text-sm font-medium">Contact</p>
-
-                <div className="text-sm text-muted-foreground space-y-2">
-                  <p>
-                    Mail Us:{" "}
-                    <a
-                      href="mailto:info@raceinnovations.in"
-                      className="underline underline-offset-4 hover:text-foreground"
-                    >
-                      info@raceinnovations.in
-                    </a>
-                  </p>
-
-                  <p>
-                    Call Us:{" "}
-                    <a
-                      href="tel:+914466108114"
-                      className="underline underline-offset-4 hover:text-foreground"
-                    >
-                      +91 44 66108114
-                    </a>{" "}
-                    /{" "}
-                    <a
-                      href="tel:+918072098352"
-                      className="underline underline-offset-4 hover:text-foreground"
-                    >
-                      +91 8072098352
-                    </a>
-                  </p>
-
-                  <p>
-                    WhatsApp:{" "}
-                    <a
-                      href="https://wa.me/919003031527"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline underline-offset-4 hover:text-foreground"
-                    >
-                      +91 9003031527
-                    </a>
-                  </p>
-
-                  <p className="leading-relaxed">
-                    Address: Olympia Platina, Guindy, Chennai 600032, TN
-                  </p>
-                </div>
-              </div>
             </div>
 
-            {/* Optional: bottom centered line */}
-            <p className="mt-8 text-center text-xs text-muted-foreground">
-              © {new Date().getFullYear()} FixMate
-            </p>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {features.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <Card
+                    key={feature.title}
+                    className="border-border/60 shadow-sm"
+                  >
+                    <CardHeader>
+                      <Icon className="mb-3 h-10 w-10 text-primary" />
+                      <CardTitle>{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-sm leading-6">
+                        {feature.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </footer>
+        </section>
+
+        <section className="border-t py-16">
+          <div className="container">
+            <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+              <Card className="rounded-3xl border bg-muted/20">
+                <CardHeader>
+                  <CardTitle className="text-2xl">
+                    Pay per incident when you need human help
+                  </CardTitle>
+                  <CardDescription>
+                    Public incident pricing is clear and simple, so customers
+                    can understand support costs before escalation.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <div className="rounded-lg border bg-background p-4">
+                    Password reset, printer troubleshooting, software repair,
+                    device configuration, tune-up, network support, malware
+                    cleanup, and emergency help are all covered in the incident
+                    pricing model.
+                  </div>
+                  <Link href="/pricing">
+                    <Button variant="outline">See incident pricing</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-3xl border bg-muted/20">
+                <CardHeader>
+                  <CardTitle className="text-2xl">
+                    Flat monthly company redundancy plans
+                  </CardTitle>
+                  <CardDescription>
+                    Company pricing is based on employee band, keeping seat
+                    management and monthly support planning simple.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <div className="rounded-lg border bg-background p-4">
+                    Small Business, Growth, Operational Redundancy, and
+                    Enterprise Lite plans cover 1–200 employees with fixed
+                    monthly pricing.
+                  </div>
+                  <Link href="/signup">
+                    <Button>Get started</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </div>
     </AppLayout>
   );

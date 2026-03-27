@@ -160,7 +160,7 @@ export function getDisplayCurrency() {
 }
 
 export function getProcessorCurrency() {
-  return "INR" as const; // temporary Razorpay testing only
+  return "USD" as const; // temporary Razorpay testing only
 }
 
 export function getProcessorAmountFromDisplayAmount(amount: number) {

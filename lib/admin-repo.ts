@@ -461,7 +461,7 @@ export async function listAdminTickets(
         SELECT 1 FROM ticket_magic_links l
          WHERE l.ticket_id = t.id
            AND l.revoked_at IS NULL
-           AND l.expires_at > NOW()
+           AND l.expires_at > UTC_TIMESTAMP()
       ) THEN 1 ELSE 0 END AS has_active_magic_link,
       CASE WHEN EXISTS(
         SELECT 1 FROM payments p2

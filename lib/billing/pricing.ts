@@ -99,6 +99,16 @@ const INCIDENT_CATALOG: IncidentType[] = [
       "Server repair requires technician review before pricing is confirmed.",
     category: "technical",
   },
+  {
+    code: "others",
+    label: "Others",
+    amount: null,
+    pricingModel: "quoted",
+    publicPriceLabel: "Quoted",
+    helper:
+      "Issue doesn't fit the other categories — pricing requires technician review before it's confirmed.",
+    category: "general",
+  },
 ];
 
 export type CompanyPlan = {

@@ -21,10 +21,10 @@ export async function GET(req: NextRequest) {
 
     const rows = await query<SummaryRow>(
       `SELECT
-         SUM(CASE WHEN revoked_at IS NULL AND expires_at > NOW() THEN 1 ELSE 0 END) AS active,
-         SUM(CASE WHEN revoked_at IS NULL AND expires_at <= NOW() THEN 1 ELSE 0 END) AS expired,
+         SUM(CASE WHEN revoked_at IS NULL AND expires_at > UTC_TIMESTAMP() THEN 1 ELSE 0 END) AS active,
+         SUM(CASE WHEN revoked_at IS NULL AND expires_at <= UTC_TIMESTAMP() THEN 1 ELSE 0 END) AS expired,
          SUM(CASE WHEN revoked_at IS NOT NULL THEN 1 ELSE 0 END) AS revoked,
-         SUM(CASE WHEN revoked_at IS NULL AND expires_at > NOW() AND visit_count = 0 THEN 1 ELSE 0 END) AS unvisited_active
+         SUM(CASE WHEN revoked_at IS NULL AND expires_at > UTC_TIMESTAMP() AND visit_count = 0 THEN 1 ELSE 0 END) AS unvisited_active
        FROM ticket_magic_links`,
     );
 

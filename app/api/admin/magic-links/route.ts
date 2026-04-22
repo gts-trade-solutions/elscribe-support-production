@@ -107,9 +107,13 @@ export async function GET(req: NextRequest) {
       const params: Array<string | number> = [];
 
       if (status === "active") {
-        whereClauses.push("l.revoked_at IS NULL AND l.expires_at > NOW()");
+        whereClauses.push(
+          "l.revoked_at IS NULL AND l.expires_at > UTC_TIMESTAMP()",
+        );
       } else if (status === "expired") {
-        whereClauses.push("l.revoked_at IS NULL AND l.expires_at <= NOW()");
+        whereClauses.push(
+          "l.revoked_at IS NULL AND l.expires_at <= UTC_TIMESTAMP()",
+        );
       } else if (status === "revoked") {
         whereClauses.push("l.revoked_at IS NOT NULL");
       }

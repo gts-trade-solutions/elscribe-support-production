@@ -112,12 +112,15 @@ export async function createMagicLink(params: {
 export async function findActiveByLinkId(
   linkId: string,
 ): Promise<MagicLinkRow | null> {
+  // Compare against UTC_TIMESTAMP() because mysql2 is configured with
+  // timezone: "Z" — all DATETIME writes/reads assume UTC. Using NOW()
+  // here would compare UTC-stored values against server-local time.
   const rows = await query<RawRow>(
     `SELECT ${SELECT_COLS}
        FROM ticket_magic_links
        WHERE id = ?
          AND revoked_at IS NULL
-         AND expires_at > NOW()
+         AND expires_at > UTC_TIMESTAMP()
        LIMIT 1`,
     [linkId],
   );
@@ -145,7 +148,7 @@ export async function findActiveByTicketId(
        FROM ticket_magic_links
        WHERE ticket_id = ?
          AND revoked_at IS NULL
-         AND expires_at > NOW()
+         AND expires_at > UTC_TIMESTAMP()
        ORDER BY created_at DESC
        LIMIT 1`,
     [ticketId],

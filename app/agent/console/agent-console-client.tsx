@@ -29,6 +29,7 @@ import {
   LayoutPanelTop,
   MessageSquare,
 } from "lucide-react";
+import { isQuotedIncidentCode } from "@/lib/billing/pricing";
 
 type BillingState = {
   isPaid: boolean;
@@ -417,7 +418,7 @@ export default function AgentConsoleClient({
   const isAdmin = session?.user?.role === "admin";
   const canQuote =
     isAdmin &&
-    billing?.incidentTypeSelected === "server_repair" &&
+    isQuotedIncidentCode(billing?.incidentTypeSelected) &&
     !billing?.isPaid &&
     !billing?.coveredByPlan &&
     billing?.billingOverrideState !== "cleared";
@@ -426,8 +427,8 @@ export default function AgentConsoleClient({
       <CardContent className="space-y-3 p-4 text-sm">
         <div className="font-medium text-foreground">Admin quote</div>
         <div className="text-muted-foreground">
-          Issue or revise the server repair quote. Customers can pay only after
-          this amount is saved.
+          Issue or revise the quote for this incident. Customers can pay only
+          after this amount is saved.
         </div>
         <div className="space-y-2">
           <label className="text-xs font-medium text-muted-foreground">

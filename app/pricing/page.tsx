@@ -49,7 +49,7 @@ export default function PricingPage() {
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               Start with a single incident or choose a monthly redundancy plan.
-              Every path still leads into the same ticket-first eLscribe support
+              Every path still leads into the same ticket-first El Scribe support
               workflow.
             </p>
           </div>

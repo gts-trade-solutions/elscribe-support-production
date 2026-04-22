@@ -89,7 +89,7 @@ export default function HandoffClient({
             <CardTitle>Invalid or expired link</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Please request a new handoff link from eLscribe.
+            Please request a new handoff link from El Scribe.
           </CardContent>
         </Card>
       </div>

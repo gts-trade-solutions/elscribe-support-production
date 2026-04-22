@@ -73,7 +73,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground sm:text-xl">
-              eLscribe connects customer handoff, tickets, realtime chat,
+              El Scribe connects customer handoff, tickets, realtime chat,
               voice/video escalation, company access control, and incident-based
               billing in a single application.
             </p>

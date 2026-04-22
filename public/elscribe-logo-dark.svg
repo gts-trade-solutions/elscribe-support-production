@@ -2,6 +2,6 @@
   <rect width="36" height="36" rx="10" fill="#60A5FA"/>
   <path d="M11 11.5H24.5V14.5H14V17H23V20H14V22.5H24.5V25.5H11V11.5Z" fill="#0F172A"/>
   <path d="M28.5 8.5L22.5 14.5H19.5L25.5 8.5H28.5Z" fill="#DBEAFE"/>
-  <text x="46" y="16" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">eLscribe</text>
+  <text x="46" y="16" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">El Scribe</text>
   <text x="46" y="29" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="10">support workspace</text>
 </svg>

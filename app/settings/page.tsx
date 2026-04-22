@@ -70,7 +70,7 @@ export default function SettingsPage() {
                   Guest session
                 </CardTitle>
                 <CardDescription>
-                  Create an account to unlock the full eLscribe workspace.
+                  Create an account to unlock the full El Scribe workspace.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-muted-foreground">
@@ -233,7 +233,7 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Workspace summary</CardTitle>
                 <CardDescription>
-                  Live session details for the current eLscribe access context.
+                  Live session details for the current El Scribe access context.
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

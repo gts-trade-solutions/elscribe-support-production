@@ -144,7 +144,7 @@ export default function ConvertAccountPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <UserPlus className="h-5 w-5" />
-                Create a full eLscribe account
+                Create a full El Scribe account
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5 text-sm">

@@ -7,14 +7,14 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "eLscribe | Ticket-first IT support",
-    template: "%s | eLscribe",
+    default: "El Scribe | Ticket-first IT support",
+    template: "%s | El Scribe",
   },
   description:
-    "eLscribe is a ticket-first IT support workspace for chat, live escalation, company access control, and incident-based support operations.",
-  applicationName: "eLscribe",
+    "El Scribe is a ticket-first IT support workspace for chat, live escalation, company access control, and incident-based support operations.",
+  applicationName: "El Scribe",
   keywords: [
-    "eLscribe",
+    "El Scribe",
     "IT support",
     "ticketing",
     "live support",

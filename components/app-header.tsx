@@ -283,14 +283,14 @@ export function AppHeader({
             {mounted ? (
               <Image
                 src={logoSrc}
-                alt="eLscribe"
+                alt="El Scribe"
                 width={142}
                 height={36}
                 priority
               />
             ) : (
               <span className="text-lg font-semibold tracking-tight">
-                eLscribe
+                El Scribe
               </span>
             )}
           </Link>
@@ -363,7 +363,7 @@ export function AppHeader({
               <SheetHeader>
                 <SheetTitle>{roleLabel} navigation</SheetTitle>
                 <SheetDescription>
-                  Open the main routes for this eLscribe workspace.
+                  Open the main routes for this El Scribe workspace.
                 </SheetDescription>
               </SheetHeader>
 

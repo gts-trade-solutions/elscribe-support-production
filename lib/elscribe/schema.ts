@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Allowlisted eLscribe handoff payload.
+ * Allowlisted El Scribe handoff payload.
  * Keep this minimal and expand only when required.
  */
 export const elscribeHandoffSchema = z.object({

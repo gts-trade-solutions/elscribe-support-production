@@ -160,7 +160,7 @@ export default function SignUpPage() {
                 <Wrench className="h-6 w-6 text-primary" />
               </div>
               <CardTitle className="text-2xl font-bold">
-                Create your eLscribe account
+                Create your El Scribe account
               </CardTitle>
               <p className="text-sm text-muted-foreground">
                 Sign up to access your support workspace

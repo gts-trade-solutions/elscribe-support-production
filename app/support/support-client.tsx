@@ -217,7 +217,7 @@ export default function SupportClient({ ticketId }: { ticketId: string }) {
         key: data.keyId,
         amount: data.amount,
         currency: data.currency,
-        name: "eLscribe",
+        name: "El Scribe",
         description: `${
           data?.incident?.label || "Support"
         } • Ticket ${String(tid).slice(0, 8)}`,

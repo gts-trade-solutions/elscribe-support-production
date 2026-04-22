@@ -118,7 +118,7 @@ export default function SignInPage() {
                 <Wrench className="h-6 w-6 text-primary" />
               </div>
               <CardTitle className="text-2xl font-bold">
-                Welcome to eLscribe
+                Welcome to El Scribe
               </CardTitle>
               <p className="text-sm text-muted-foreground">
                 Sign in to access your support workspace

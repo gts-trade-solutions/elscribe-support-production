@@ -248,7 +248,7 @@ export default function TicketLinkClient({ token }: { token: string }) {
         key: orderJson.keyId,
         amount: orderJson.amount,
         currency: orderJson.currency,
-        name: "eLscribe",
+        name: "El Scribe",
         description: `${
           orderJson?.incident?.label || "Support"
         } • Ticket ${String(ticketId).slice(0, 8)}`,

@@ -73,7 +73,7 @@ const EMPTY_FORM: FormState = {
   quoteNote: "",
 };
 
-const DEFAULT_GREETING = `Hi! Thanks for reaching out to eLscribe support.
+const DEFAULT_GREETING = `Hi! Thanks for reaching out to El Scribe support.
 
 Give me one minute — I'm getting your ticket set up right now. As soon as it's ready I'll send you a secure payment link. Once you pay, you'll land directly on your support page and we can get started on the fix.
 
@@ -563,7 +563,7 @@ export function CreateMagicLinkDialog({
               <Alert variant="destructive">
                 <AlertTitle>Email already in use</AlertTitle>
                 <AlertDescription>
-                  {existingRealUserEmail} belongs to an existing eLscribe
+                  {existingRealUserEmail} belongs to an existing El Scribe
                   account. Please ask the customer to sign in and create the
                   ticket themselves — we can&apos;t generate a payment link
                   for an existing account from here.

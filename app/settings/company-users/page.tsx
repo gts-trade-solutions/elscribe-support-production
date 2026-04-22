@@ -367,7 +367,7 @@ export default function CompanyUsersPage() {
         key: data.keyId,
         amount: data.amount,
         currency: data.currency,
-        name: "eLscribe",
+        name: "El Scribe",
         description: `${plan.name} • Company plan`,
         order_id: data.orderId,
         handler: async (resp: any) => {

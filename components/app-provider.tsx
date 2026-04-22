@@ -54,7 +54,7 @@ function AppContextInner({ children }: { children: React.ReactNode }) {
         sessionStorage.removeItem("__flash_toast");
         sessionStorage.removeItem("__guest_postpay_hint");
         sessionStorage.removeItem("__guest_banner_dismissed");
-        toast.success("Welcome to eLscribe", {
+        toast.success("Welcome to El Scribe", {
           description: "Your ticket and history are here.",
         });
         return;

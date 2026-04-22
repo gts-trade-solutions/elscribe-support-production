@@ -28,6 +28,8 @@ type AppContextType = {
   signOut: () => Promise<void>;
   accountType: string | null;
   membershipRole: string | null;
+  isGuest: boolean;
+  sessionExpiresAt: string | null;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -41,8 +43,40 @@ function mapDbRoleToUiRole(dbRole: unknown): Role {
 function AppContextInner({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
 
+  // Post-payment hint takes priority over __flash_toast — both fire at most
+  // once, and we only want to show one toast per page-load to avoid stacking.
   useEffect(() => {
     try {
+      const welcome = sessionStorage.getItem("__convert_welcome_pending");
+      const isGuest = Boolean((session?.user as any)?.isGuest);
+      if (welcome === "1" && !isGuest) {
+        sessionStorage.removeItem("__convert_welcome_pending");
+        sessionStorage.removeItem("__flash_toast");
+        sessionStorage.removeItem("__guest_postpay_hint");
+        sessionStorage.removeItem("__guest_banner_dismissed");
+        toast.success("Welcome to eLscribe", {
+          description: "Your ticket and history are here.",
+        });
+        return;
+      }
+
+      const postpay = sessionStorage.getItem("__guest_postpay_hint");
+      if (postpay === "1" && isGuest) {
+        sessionStorage.removeItem("__guest_postpay_hint");
+        sessionStorage.removeItem("__flash_toast");
+        toast.message("Payment received", {
+          description:
+            "Your ticket is ready — a guest session keeps you signed in for 48 hours.",
+          action: {
+            label: "Create account",
+            onClick: () => {
+              window.location.assign("/convert-account");
+            },
+          },
+        });
+        return;
+      }
+
       const raw = sessionStorage.getItem("__flash_toast");
       if (!raw) return;
       sessionStorage.removeItem("__flash_toast");
@@ -62,7 +96,7 @@ function AppContextInner({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
-  }, []);
+  }, [session?.user]);
 
   const isAuthenticated = status === "authenticated";
   const sessionUser = (session?.user ?? {}) as Record<string, unknown>;
@@ -72,6 +106,10 @@ function AppContextInner({ children }: { children: React.ReactNode }) {
     : null;
   const membershipRole = sessionUser.membershipRole
     ? String(sessionUser.membershipRole)
+    : null;
+  const isGuest = Boolean(sessionUser.isGuest);
+  const sessionExpiresAt = sessionUser.sessionExpiresAt
+    ? String(sessionUser.sessionExpiresAt)
     : null;
 
   const user: AppUser | null = isAuthenticated
@@ -92,11 +130,21 @@ function AppContextInner({ children }: { children: React.ReactNode }) {
       role,
       accountType,
       membershipRole,
+      isGuest,
+      sessionExpiresAt,
       signOut: async () => {
         await nextAuthSignOut({ callbackUrl: "/" });
       },
     }),
-    [user, isAuthenticated, role, accountType, membershipRole],
+    [
+      user,
+      isAuthenticated,
+      role,
+      accountType,
+      membershipRole,
+      isGuest,
+      sessionExpiresAt,
+    ],
   );
 
   return (

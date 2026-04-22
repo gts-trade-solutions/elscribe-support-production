@@ -23,6 +23,7 @@ import {
   ClipboardList,
   CreditCard,
   Home,
+  Link2,
   ListTodo,
   LogIn,
   LogOut,
@@ -60,6 +61,7 @@ interface AppHeaderProps {
   onSignOut: () => void | Promise<void>;
   accountType?: string | null;
   membershipRole?: string | null;
+  isGuest?: boolean;
 }
 
 function isPathActive(
@@ -86,6 +88,7 @@ export function AppHeader({
   onSignOut,
   accountType,
   membershipRole,
+  isGuest,
 }: AppHeaderProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -101,7 +104,8 @@ export function AppHeader({
     pathname.startsWith("/signin") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/handoff") ||
-    pathname.startsWith("/invite");
+    pathname.startsWith("/invite") ||
+    pathname.startsWith("/ticket-link");
 
   const usePublicShell = !isAuthenticated || isAuthFlowPage;
 
@@ -192,6 +196,11 @@ export function AppHeader({
             icon: Receipt,
           },
           {
+            href: "/admin/magic-links",
+            label: "Magic links",
+            icon: Link2,
+          },
+          {
             href: "/admin/agent-requests",
             label: "Agent Requests",
             icon: UserCog,
@@ -202,6 +211,29 @@ export function AppHeader({
           href: "/admin/tickets",
           label: "Manage tickets",
           icon: ClipboardList,
+        } as ActionItem,
+      };
+    }
+
+    // Guest customers get a stripped-down customer shell: they can only
+    // see their existing ticket and don't have New-ticket / Company-users
+    // entry points (no real account backing either).
+    if (isGuest) {
+      return {
+        roleLabel: "Guest",
+        homeHref: "/tickets",
+        navItems: [
+          { href: "/tickets", label: "My ticket", icon: MessageSquare },
+          {
+            href: "/convert-account",
+            label: "Create account",
+            icon: UserPlus,
+          },
+        ] as NavItem[],
+        primaryAction: {
+          href: "/convert-account",
+          label: "Create account",
+          icon: UserPlus,
         } as ActionItem,
       };
     }
@@ -231,7 +263,7 @@ export function AppHeader({
         icon: PlusCircle,
       } as ActionItem,
     };
-  }, [usePublicShell, role, accountType, membershipRole]);
+  }, [usePublicShell, role, accountType, membershipRole, isGuest]);
 
   const handleSignOut = async () => {
     setMobileOpen(false);

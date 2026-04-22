@@ -24,6 +24,8 @@ import {
   ClipboardList,
   LayoutDashboard,
   Settings,
+  Lock,
+  UserPlus,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -36,6 +38,7 @@ export default function SettingsPage() {
         accountId?: string;
         accountType?: string;
         membershipRole?: string;
+        isGuest?: boolean;
       }
     | undefined;
 
@@ -45,6 +48,61 @@ export default function SettingsPage() {
   const isAdmin = role === "admin";
   const isCompany = user?.accountType === "company";
   const isOwner = user?.membershipRole === "owner";
+  const isGuest = Boolean(user?.isGuest);
+
+  if (isGuest) {
+    return (
+      <AppLayout>
+        <div className="container py-8">
+          <div className="mx-auto max-w-2xl space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+              <p className="mt-2 text-muted-foreground">
+                You&apos;re signed in with a temporary guest session. Most
+                workspace settings require a full account.
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Lock className="h-5 w-5" />
+                  Guest session
+                </CardTitle>
+                <CardDescription>
+                  Create an account to unlock the full eLscribe workspace.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <div className="rounded-lg border p-4">
+                  Create an account to access company users and seat
+                  management.
+                </div>
+                <div className="rounded-lg border p-4">
+                  Create an account to access agent-access requests.
+                </div>
+                <div className="rounded-lg border p-4">
+                  Create an account to keep your ticket history beyond the
+                  48-hour guest window.
+                </div>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button asChild>
+                    <Link href="/convert-account">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Create account
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link href="/tickets">Back to my ticket</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   const quickLinks = isAdmin
     ? [

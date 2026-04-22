@@ -407,6 +407,40 @@ CREATE TABLE `ticket_billing_overrides` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `ticket_magic_links`
+--
+
+DROP TABLE IF EXISTS `ticket_magic_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ticket_magic_links` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ticket_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guest_user_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token_hash` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_by_user_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `revoked_at` timestamp NULL DEFAULT NULL,
+  `revoked_by_user_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_visited_at` timestamp NULL DEFAULT NULL,
+  `visit_count` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_magic_links_token_hash` (`token_hash`),
+  KEY `idx_magic_links_ticket` (`ticket_id`),
+  KEY `idx_magic_links_guest` (`guest_user_id`),
+  KEY `idx_magic_links_expires` (`expires_at`),
+  KEY `fk_magic_links_created_by` (`created_by_user_id`),
+  KEY `fk_magic_links_revoked_by` (`revoked_by_user_id`),
+  CONSTRAINT `fk_magic_links_created_by` FOREIGN KEY (`created_by_user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_magic_links_guest_user` FOREIGN KEY (`guest_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_magic_links_revoked_by` FOREIGN KEY (`revoked_by_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_magic_links_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `ticket_messages`
 --
 
@@ -499,12 +533,14 @@ CREATE TABLE `users` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'customer',
+  `is_guest` tinyint(1) NOT NULL DEFAULT '0',
   `alias` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_users_email` (`email`),
-  KEY `idx_users_role` (`role`)
+  KEY `idx_users_role` (`role`),
+  KEY `idx_users_is_guest` (`is_guest`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

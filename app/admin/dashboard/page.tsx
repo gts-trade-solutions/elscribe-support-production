@@ -16,6 +16,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Headset,
+  Link2,
   ShieldCheck,
   Users,
   UserCog,
@@ -51,6 +52,13 @@ type PaymentMetrics = {
 
 type AgentRequest = { id: string };
 
+type MagicLinkSummary = {
+  active: number;
+  expired: number;
+  revoked: number;
+  unvisitedActive: number;
+};
+
 type QueueTicket = {
   quoteRequired: boolean;
 };
@@ -67,21 +75,27 @@ export default function AdminDashboardPage() {
   const [paymentMetrics, setPaymentMetrics] = useState<PaymentMetrics | null>(
     null,
   );
+  const [magicLinkSummary, setMagicLinkSummary] =
+    useState<MagicLinkSummary | null>(null);
 
   const refresh = async () => {
     setLoading(true);
     try {
-      const [requestsRes, ticketsRes, paymentsRes] = await Promise.all([
-        fetch("/api/admin/agent-requests", { cache: "no-store" }),
-        fetch("/api/admin/tickets", { cache: "no-store" }),
-        fetch("/api/admin/payments", { cache: "no-store" }),
-      ]);
+      const [requestsRes, ticketsRes, paymentsRes, magicLinksRes] =
+        await Promise.all([
+          fetch("/api/admin/agent-requests", { cache: "no-store" }),
+          fetch("/api/admin/tickets", { cache: "no-store" }),
+          fetch("/api/admin/payments", { cache: "no-store" }),
+          fetch("/api/admin/magic-links/summary", { cache: "no-store" }),
+        ]);
 
-      const [requestsJson, ticketsJson, paymentsJson] = await Promise.all([
-        requestsRes.json(),
-        ticketsRes.json(),
-        paymentsRes.json(),
-      ]);
+      const [requestsJson, ticketsJson, paymentsJson, magicLinksJson] =
+        await Promise.all([
+          requestsRes.json(),
+          ticketsRes.json(),
+          paymentsRes.json(),
+          magicLinksRes.json(),
+        ]);
 
       if (requestsRes.ok) setPendingRequests(requestsJson.items || []);
       if (ticketsRes.ok) {
@@ -89,6 +103,8 @@ export default function AdminDashboardPage() {
         setQueueTickets(ticketsJson.tickets || []);
       }
       if (paymentsRes.ok) setPaymentMetrics(paymentsJson.metrics || null);
+      if (magicLinksRes.ok)
+        setMagicLinkSummary(magicLinksJson as MagicLinkSummary);
     } finally {
       setLoading(false);
     }
@@ -118,8 +134,16 @@ export default function AdminDashboardPage() {
       capturedDisplayCurrency:
         paymentMetrics?.succeededDisplayCurrency ?? "USD",
       paymentSuccessRate: paymentMetrics?.successRatePercent ?? 0,
+      magicLinksActive: magicLinkSummary?.active ?? 0,
+      magicLinksUnvisited: magicLinkSummary?.unvisitedActive ?? 0,
     };
-  }, [metrics, paymentMetrics, pendingRequests, queueTickets]);
+  }, [
+    metrics,
+    paymentMetrics,
+    pendingRequests,
+    queueTickets,
+    magicLinkSummary,
+  ]);
 
   const adminCards = [
     {
@@ -172,6 +196,14 @@ export default function AdminDashboardPage() {
       icon: FileText,
       href: "/admin/tickets?billing=quote_pending",
       cta: "Review quote-needed",
+    },
+    {
+      title: "Active magic links",
+      value: stats.magicLinksActive,
+      description: `${stats.magicLinksUnvisited} awaiting customer click`,
+      icon: Link2,
+      href: "/admin/magic-links",
+      cta: "Review active links",
     },
     {
       title: "Pending agent requests",

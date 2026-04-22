@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import Link from "next/link";
 import { AppLayout } from "@/app/app-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ import {
   Building2,
   CreditCard,
   Check,
+  Lock,
 } from "lucide-react";
 
 type AccountSummary = {
@@ -130,6 +132,7 @@ export default function CompanyUsersPage() {
   const didLoadRef = useRef(false);
 
   const sessionRole = (session?.user as any)?.role as string | undefined;
+  const isGuest = Boolean((session?.user as any)?.isGuest);
 
   const [loading, setLoading] = useState(false);
   const [bootstrapping, setBootstrapping] = useState(true);
@@ -251,14 +254,14 @@ export default function CompanyUsersPage() {
 
   useEffect(() => {
     if (status === "loading") return;
-    if (status === "unauthenticated") {
+    if (status === "unauthenticated" || isGuest) {
       setBootstrapping(false);
       return;
     }
     if (didLoadRef.current) return;
     didLoadRef.current = true;
     refresh(false);
-  }, [refresh, status]);
+  }, [refresh, status, isGuest]);
 
   const convertToCompany = async () => {
     setLoading(true);
@@ -404,6 +407,35 @@ export default function CompanyUsersPage() {
       setPayingPlanCode(null);
     }
   };
+
+  if (isGuest) {
+    return (
+      <AppLayout>
+        <div className="container py-10">
+          <Card className="mx-auto max-w-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Company users
+              </CardTitle>
+              <CardDescription>
+                Create an account to access company seats and invites. Guest
+                sessions are always individual and time-boxed.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              <Button asChild>
+                <Link href="/convert-account">Create account</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/tickets">Back to my ticket</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </AppLayout>
+    );
+  }
 
   if (status === "loading" || bootstrapping) {
     return (

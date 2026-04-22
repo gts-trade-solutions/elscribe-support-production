@@ -12,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -26,6 +28,7 @@ type CustomerRow = {
   id: string;
   email: string;
   role: "customer";
+  isGuest: boolean;
   activeAccountType: "individual" | "company" | null;
   membershipRole: "owner" | "member" | null;
   planCode: string | null;
@@ -39,12 +42,16 @@ export default function AdminCustomersPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [customers, setCustomers] = useState<CustomerRow[]>([]);
+  const [includeGuests, setIncludeGuests] = useState(false);
 
-  const load = async (nextSearch = search) => {
+  const load = async (opts?: { search?: string; includeGuests?: boolean }) => {
+    const nextSearch = opts?.search ?? search;
+    const nextIncludeGuests = opts?.includeGuests ?? includeGuests;
     setLoading(true);
     try {
       const qs = new URLSearchParams({ role: "customer" });
       if (nextSearch.trim()) qs.set("search", nextSearch.trim());
+      if (nextIncludeGuests) qs.set("includeGuests", "1");
       const res = await fetch(`/api/admin/users?${qs.toString()}`, {
         cache: "no-store",
       });
@@ -56,7 +63,8 @@ export default function AdminCustomersPage() {
   };
 
   useEffect(() => {
-    load("");
+    load({ search: "", includeGuests: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -71,7 +79,20 @@ export default function AdminCustomersPage() {
                 ticket volume across individual and company workspaces.
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="include-guests"
+                  checked={includeGuests}
+                  onCheckedChange={(checked) => {
+                    setIncludeGuests(checked);
+                    load({ includeGuests: checked });
+                  }}
+                />
+                <Label htmlFor="include-guests" className="text-sm">
+                  Include guests
+                </Label>
+              </div>
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -80,7 +101,7 @@ export default function AdminCustomersPage() {
               />
               <Button
                 variant="outline"
-                onClick={() => load(search)}
+                onClick={() => load()}
                 disabled={loading}
               >
                 <RefreshCw className="mr-2 h-4 w-4" /> Refresh
@@ -112,7 +133,14 @@ export default function AdminCustomersPage() {
                   {customers.map((customer) => (
                     <TableRow key={customer.id}>
                       <TableCell>
-                        <div className="font-medium">{customer.email}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{customer.email}</span>
+                          {customer.isGuest ? (
+                            <Badge variant="outline" className="text-xs">
+                              Guest
+                            </Badge>
+                          ) : null}
+                        </div>
                         <div className="text-xs text-muted-foreground">
                           {customer.id}
                         </div>

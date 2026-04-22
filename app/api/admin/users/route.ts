@@ -18,7 +18,14 @@ export async function GET(req: NextRequest) {
 
     const role = parseRole(req.nextUrl.searchParams.get("role"));
     const search = req.nextUrl.searchParams.get("search");
-    const users = await listAdminUsers({ role, search, limit: 300 });
+    const includeGuests =
+      req.nextUrl.searchParams.get("includeGuests") === "1";
+    const users = await listAdminUsers({
+      role,
+      search,
+      includeGuests,
+      limit: 300,
+    });
 
     return NextResponse.json({ users });
   } catch (e: any) {

@@ -1,10 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { AppLayout } from "../../app-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,7 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CreditCard, ShieldCheck, Ticket } from "lucide-react";
+import {
+  ArrowRight,
+  CreditCard,
+  Lock,
+  ShieldCheck,
+  Ticket,
+  UserPlus,
+} from "lucide-react";
 import { toast } from "sonner";
 import { formatIncidentPrice, getIncidentCatalog } from "@/lib/billing/pricing";
 
@@ -28,6 +43,8 @@ export default function NewTicketClient({
   initialIncidentType: string;
 }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const isGuest = Boolean((session?.user as any)?.isGuest);
 
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
@@ -90,6 +107,49 @@ export default function NewTicketClient({
       setSaving(false);
     }
   };
+
+  if (status === "authenticated" && isGuest) {
+    return (
+      <AppLayout>
+        <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
+          <div className="w-full max-w-xl">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Creating additional tickets requires an account
+                </CardTitle>
+                <CardDescription>
+                  Your current session is a guest session tied to a single
+                  ticket. Create a full account to open more tickets under the
+                  same email, or ask your agent for a new payment link for
+                  this new issue.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-lg border bg-muted/30 p-3 text-xs text-muted-foreground">
+                  Creating an account keeps your existing ticket, chat
+                  history, and payment history exactly where they are —
+                  nothing moves.
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button asChild>
+                    <Link href="/convert-account">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Create an account
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link href="/tickets">Back to my ticket</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

@@ -8,13 +8,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  AlertCircle,
   Clock,
   MessageSquare,
   RefreshCw,
   CreditCard,
   ArrowRight,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { CreateMagicLinkDialog } from "@/components/agent/create-magic-link-dialog";
 
 type TicketStatus =
   | "open"
@@ -40,6 +48,7 @@ type AgentTicketItem = {
   incidentTypeSelected: string | null;
   coveredByPlan: boolean;
   coveredPlanCode: string | null;
+  awaitingResponse: boolean;
 };
 
 const priorityVariant: Record<
@@ -139,7 +148,13 @@ export default function AgentQueueClient({
     t: AgentTicketItem;
     showClaim?: boolean;
   }) => (
-    <Card className="overflow-hidden border-border/70">
+    <Card
+      className={`overflow-hidden border-border/70 ${
+        t.awaitingResponse
+          ? "bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 dark:ring-amber-900/60"
+          : ""
+      }`}
+    >
       <CardContent className="space-y-4 p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
@@ -148,6 +163,25 @@ export default function AgentQueueClient({
               <Badge variant={t.status === "open" ? "destructive" : "default"}>
                 {t.status.replaceAll("_", " ")}
               </Badge>
+              {t.awaitingResponse ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge
+                        variant="destructive"
+                        className="flex items-center gap-1"
+                      >
+                        <AlertCircle className="h-3 w-3" />
+                        Awaiting response
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Payment received. Customer is waiting for your first
+                      response.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : null}
               {!t.incidentTypeSelected ? (
                 <Badge variant="destructive">Incident required</Badge>
               ) : t.coveredByPlan ? (
@@ -263,10 +297,13 @@ export default function AgentQueueClient({
                 are still blocked by billing or quote review.
               </p>
             </div>
-            <Button variant="outline" onClick={load} disabled={loading}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Refresh
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <CreateMagicLinkDialog />
+              <Button variant="outline" onClick={load} disabled={loading}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">

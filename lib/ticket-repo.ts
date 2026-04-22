@@ -55,6 +55,7 @@ export type TicketListItem = {
 
 export type AgentTicketListItem = TicketListItem & {
   agentAlias: string;
+  awaitingResponse: boolean;
 };
 
 function deriveTicketBillingFlags(args: {
@@ -557,8 +558,29 @@ function mapAgentTicketRow(r: any): AgentTicketListItem {
     billingOverrideState: r.billing_override_state
       ? (String(r.billing_override_state) as any)
       : null,
+    awaitingResponse: Number(r.awaiting_agent_response) === 1,
   };
 }
+
+// Shared SQL fragment: 1 when the ticket is paid (non-plan-covered) and has
+// zero agent/admin messages after the succeeded payment's updated_at. The
+// payments table doesn't store paid_at, but status transitions bump
+// updated_at via ON UPDATE CURRENT_TIMESTAMP, so MAX(updated_at) on
+// status='succeeded' is the effective payment-success timestamp.
+const AWAITING_RESPONSE_SQL = `
+  CASE WHEN EXISTS(
+    SELECT 1 FROM payments p2
+     WHERE p2.ticket_id = t.id AND p2.type='incident' AND p2.status='succeeded'
+  ) AND NOT EXISTS(
+    SELECT 1 FROM ticket_messages tm
+     WHERE tm.ticket_id = t.id
+       AND tm.sender_role IN ('agent','admin')
+       AND tm.created_at > (
+         SELECT MAX(p3.updated_at) FROM payments p3
+          WHERE p3.ticket_id = t.id AND p3.type='incident' AND p3.status='succeeded'
+       )
+  ) THEN 1 ELSE 0 END AS awaiting_agent_response
+`;
 
 export async function listAgentQueue(): Promise<AgentTicketListItem[]> {
   const rows = await query<any>(
@@ -583,7 +605,8 @@ export async function listAgentQueue(): Promise<AgentTicketListItem[]> {
                WHERE tbo.ticket_id = t.id
                ORDER BY tbo.updated_at DESC, tbo.created_at DESC
                LIMIT 1
-            ) AS billing_override_state
+            ) AS billing_override_state,
+            ${AWAITING_RESPONSE_SQL}
        FROM tickets t
        JOIN ticket_aliases a ON a.ticket_id = t.id
   LEFT JOIN ticket_quotes q ON q.ticket_id = t.id
@@ -591,7 +614,7 @@ export async function listAgentQueue(): Promise<AgentTicketListItem[]> {
   LEFT JOIN subscriptions s ON s.account_id = t.account_id
       WHERE t.assigned_agent_id IS NULL
         AND t.status IN ('open','in_progress','waiting_customer')
-      ORDER BY t.created_at DESC
+      ORDER BY awaiting_agent_response DESC, t.created_at DESC
       LIMIT 200`,
   );
 
@@ -623,7 +646,8 @@ export async function listAgentMine(
                WHERE tbo.ticket_id = t.id
                ORDER BY tbo.updated_at DESC, tbo.created_at DESC
                LIMIT 1
-            ) AS billing_override_state
+            ) AS billing_override_state,
+            ${AWAITING_RESPONSE_SQL}
        FROM tickets t
        JOIN ticket_aliases a ON a.ticket_id = t.id
   LEFT JOIN ticket_quotes q ON q.ticket_id = t.id
@@ -631,7 +655,7 @@ export async function listAgentMine(
   LEFT JOIN subscriptions s ON s.account_id = t.account_id
       WHERE t.assigned_agent_id = ?
         AND t.status IN ('open','in_progress','waiting_customer','resolved')
-      ORDER BY t.updated_at DESC
+      ORDER BY awaiting_agent_response DESC, t.updated_at DESC
       LIMIT 200`,
     [agentId],
   );

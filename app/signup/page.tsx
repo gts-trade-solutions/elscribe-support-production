@@ -59,6 +59,21 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Query-string prefill (used by /convert-account → /signup?prefillEmail=...)
+    try {
+      if (typeof window !== "undefined") {
+        const qp = new URLSearchParams(window.location.search).get(
+          "prefillEmail",
+        );
+        if (qp && !email) {
+          setEmail(qp);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    // sessionStorage prefill (used by the handoff flow)
     try {
       const raw = sessionStorage.getItem("elscribe_prefill_signup");
       if (!raw) return;

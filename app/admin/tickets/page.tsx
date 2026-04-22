@@ -28,7 +28,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { RefreshCw, ShieldCheck } from "lucide-react";
+import { AlertCircle, Link2, RefreshCw, ShieldCheck } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { CreateMagicLinkDialog } from "@/components/agent/create-magic-link-dialog";
 
 type TicketStatus =
   | "open"
@@ -57,6 +64,9 @@ type TicketRow = {
   isPaid: boolean;
   coveredByPlan: boolean;
   billingOverrideState: Exclude<BillingOverrideState, "system"> | null;
+  hasMagicLink: boolean;
+  hasActiveMagicLink: boolean;
+  awaitingResponse: boolean;
 };
 
 type Operator = { id: string; email: string; role: "agent" | "admin" };
@@ -298,9 +308,12 @@ export default function AdminTicketsPage() {
                 business exception needs intervention.
               </p>
             </div>
-            <Button variant="outline" onClick={() => load()} disabled={loading}>
-              <RefreshCw className="mr-2 h-4 w-4" /> Refresh
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <CreateMagicLinkDialog viewerRole="admin" />
+              <Button variant="outline" onClick={() => load()} disabled={loading}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">
@@ -409,10 +422,67 @@ export default function AdminTicketsPage() {
                     };
                     const badge = billingLabel(ticket);
                     return (
-                      <TableRow key={ticket.id}>
+                      <TableRow
+                        key={ticket.id}
+                        className={
+                          ticket.awaitingResponse
+                            ? "bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-950/50"
+                            : ""
+                        }
+                      >
                         <TableCell className="align-top">
-                          <div className="truncate font-medium">
-                            {ticket.subject}
+                          {ticket.awaitingResponse ? (
+                            <div className="mb-2">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Badge
+                                      variant="destructive"
+                                      className="flex w-fit items-center gap-1"
+                                    >
+                                      <AlertCircle className="h-3 w-3" />
+                                      Awaiting response
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    Payment received. Customer is waiting for
+                                    your first response.
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          ) : null}
+                          <div className="flex items-center gap-1.5">
+                            <Link
+                              href={`/admin/tickets/${ticket.id}`}
+                              className="truncate font-medium text-primary underline underline-offset-2 hover:opacity-80"
+                            >
+                              {ticket.subject}
+                            </Link>
+                            {ticket.hasMagicLink ? (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link
+                                      href={`/admin/tickets/${ticket.id}`}
+                                      aria-label="View magic links for this ticket"
+                                      className={`inline-flex h-5 w-5 items-center justify-center rounded-full ${
+                                        ticket.hasActiveMagicLink
+                                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                                          : "bg-muted text-muted-foreground"
+                                      }`}
+                                    >
+                                      <Link2 className="h-3 w-3" />
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {ticket.hasActiveMagicLink
+                                      ? "Has active magic link — click to manage"
+                                      : "Created via magic link — click to manage"}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            ) : null}
                           </div>
                           <div className="truncate text-xs text-muted-foreground">
                             {ticket.id}

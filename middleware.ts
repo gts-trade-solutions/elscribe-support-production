@@ -10,6 +10,9 @@ function isPublicPath(pathname: string) {
   if (pathname.startsWith("/pricing")) return true;
   if (pathname.startsWith("/handoff")) return true;
   if (pathname.startsWith("/invite")) return true;
+  if (pathname.startsWith("/ticket-link")) return true;
+  if (pathname.startsWith("/session-expired")) return true;
+  if (pathname.startsWith("/convert-account")) return true;
   return false;
 }
 
@@ -28,8 +31,40 @@ export async function middleware(req: NextRequest) {
 
   if (isPublicPath(pathname)) return NextResponse.next();
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  if (!token) {
+  const token = (await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  })) as any;
+
+  // A wiped guest token (the Phase 3 jwt callback returns {} on guest
+  // expiry) still decodes to a non-null object but with no uid. Any
+  // protected-route hit without uid whose browser carries a NextAuth
+  // session cookie is treated as an expired session and lands on the
+  // dedicated page instead of generic sign-in.
+  const hasSessionCookie =
+    req.cookies.has("next-auth.session-token") ||
+    req.cookies.has("__Secure-next-auth.session-token");
+
+  if (!token?.uid) {
+    const tokenIsStale = Boolean(token && hasSessionCookie);
+    if (tokenIsStale) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/session-expired";
+      url.search = "";
+      const res = NextResponse.redirect(url);
+      // Clear the stale cookie so the user doesn't bounce through this
+      // branch again on every subsequent request.
+      res.cookies.set("next-auth.session-token", "", {
+        path: "/",
+        maxAge: 0,
+      });
+      res.cookies.set("__Secure-next-auth.session-token", "", {
+        path: "/",
+        maxAge: 0,
+        secure: true,
+      });
+      return res;
+    }
     const url = req.nextUrl.clone();
     url.pathname = "/signin";
     url.searchParams.set(

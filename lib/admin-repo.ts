@@ -14,6 +14,7 @@ export type AdminUserListItem = {
   id: string;
   email: string;
   role: "customer" | "agent" | "admin";
+  isGuest: boolean;
   activeAccountId: string | null;
   activeAccountType: "individual" | "company" | null;
   membershipRole: "owner" | "member" | null;
@@ -52,6 +53,9 @@ export type AdminTicketListItem = {
   coveredPlanCode: string | null;
   billingOverrideState: "cleared" | "blocked" | null;
   billingOverrideNote: string | null;
+  hasMagicLink: boolean;
+  hasActiveMagicLink: boolean;
+  awaitingResponse: boolean;
 };
 
 export type AdminTicketFilters = {
@@ -159,10 +163,15 @@ export async function listAdminUsers(params: {
   role?: AdminUserRoleFilter | null;
   search?: string | null;
   limit?: number;
+  includeGuests?: boolean;
 }): Promise<AdminUserListItem[]> {
   const where: string[] = [];
 
   if (params.role) where.push(`u.role = ${esc(params.role)}`);
+
+  if (!params.includeGuests) {
+    where.push(`u.is_guest = 0`);
+  }
 
   const search = params.search?.trim();
   if (search) {
@@ -174,6 +183,7 @@ export async function listAdminUsers(params: {
   const sql = `SELECT u.id,
       u.email,
       u.role,
+      u.is_guest AS isGuest,
       u.created_at AS createdAt,
       (
         SELECT m.account_id
@@ -265,6 +275,7 @@ export async function listAdminUsers(params: {
     id: String(r.id),
     email: String(r.email),
     role: r.role,
+    isGuest: Number(r.isGuest) === 1,
     activeAccountId: r.activeAccountId ? String(r.activeAccountId) : null,
     activeAccountType: r.activeAccountType ?? null,
     membershipRole: r.membershipRole ?? null,
@@ -341,6 +352,9 @@ function mapAdminTicketRow(r: any): AdminTicketListItem {
     billingOverrideNote: r.billing_override_note
       ? String(r.billing_override_note)
       : null,
+    hasMagicLink: Number(r.has_magic_link) === 1,
+    hasActiveMagicLink: Number(r.has_active_magic_link) === 1,
+    awaitingResponse: Number(r.awaiting_agent_response) === 1,
   };
 }
 
@@ -438,14 +452,36 @@ export async function listAdminTickets(
          WHERE tbo.ticket_id = t.id
          ORDER BY tbo.updated_at DESC, tbo.created_at DESC
          LIMIT 1
-      ) AS billing_override_note
+      ) AS billing_override_note,
+      CASE WHEN EXISTS(
+        SELECT 1 FROM ticket_magic_links l
+         WHERE l.ticket_id = t.id
+      ) THEN 1 ELSE 0 END AS has_magic_link,
+      CASE WHEN EXISTS(
+        SELECT 1 FROM ticket_magic_links l
+         WHERE l.ticket_id = t.id
+           AND l.revoked_at IS NULL
+           AND l.expires_at > NOW()
+      ) THEN 1 ELSE 0 END AS has_active_magic_link,
+      CASE WHEN EXISTS(
+        SELECT 1 FROM payments p2
+         WHERE p2.ticket_id = t.id AND p2.type='incident' AND p2.status='succeeded'
+      ) AND NOT EXISTS(
+        SELECT 1 FROM ticket_messages tm
+         WHERE tm.ticket_id = t.id
+           AND tm.sender_role IN ('agent','admin')
+           AND tm.created_at > (
+             SELECT MAX(p3.updated_at) FROM payments p3
+              WHERE p3.ticket_id = t.id AND p3.type='incident' AND p3.status='succeeded'
+           )
+      ) THEN 1 ELSE 0 END AS awaiting_agent_response
     FROM tickets t
     JOIN ticket_aliases ta ON ta.ticket_id = t.id
     JOIN users creator ON creator.id = t.created_by_user_id
     LEFT JOIN users assigned ON assigned.id = t.assigned_agent_id
     LEFT JOIN accounts acc ON acc.id = t.account_id
     ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-    ORDER BY t.updated_at DESC
+    ORDER BY awaiting_agent_response DESC, t.updated_at DESC
     LIMIT ${getSafeLimit(filters.limit, 200)}`;
 
   let items = (await rawQuery<any>(sql)).map(mapAdminTicketRow);

@@ -19,6 +19,10 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  GuestPostpayHint,
+  useGuestPostpayHint,
+} from "@/components/guest-postpay-hint";
 
 type TicketStatus =
   | "open"
@@ -116,6 +120,7 @@ export default function TicketDetailPage({
   const [callReq, setCallReq] = useState<CallReq | null>(null);
   const [loading, setLoading] = useState(true);
   const [closing, setClosing] = useState(false);
+  const { active: postpayActive, clear: clearPostpay } = useGuestPostpayHint();
 
   const paymentLabel = useMemo(() => {
     if (!billing)
@@ -241,6 +246,10 @@ export default function TicketDetailPage({
             </Card>
           ) : (
             <>
+              <GuestPostpayHint
+                active={postpayActive}
+                onDismiss={clearPostpay}
+              />
               <Card>
                 <CardHeader className="space-y-4">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -274,11 +283,22 @@ export default function TicketDetailPage({
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                      <Link href={`/support?ticketId=${ticket.id}`}>
-                        <Button>
-                          Continue support
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
+                      <Link
+                        href={`/support?ticketId=${ticket.id}`}
+                        onClick={clearPostpay}
+                      >
+                        <div
+                          className={
+                            postpayActive
+                              ? "rounded-md ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-background animate-pulse"
+                              : undefined
+                          }
+                        >
+                          <Button>
+                            Continue support
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </div>
                       </Link>
                       <Button
                         variant="outline"
@@ -462,8 +482,21 @@ export default function TicketDetailPage({
                       </div>
                     ) : null}
 
-                    <Link href={`/support?ticketId=${ticket.id}`}>
-                      <Button className="w-full">Open support workspace</Button>
+                    <Link
+                      href={`/support?ticketId=${ticket.id}`}
+                      onClick={clearPostpay}
+                    >
+                      <div
+                        className={
+                          postpayActive
+                            ? "rounded-md ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-background animate-pulse"
+                            : undefined
+                        }
+                      >
+                        <Button className="w-full">
+                          Open support workspace
+                        </Button>
+                      </div>
                     </Link>
                   </CardContent>
                 </Card>

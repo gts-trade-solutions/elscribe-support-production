@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import { useApp } from "@/components/app-provider";
 import { AppHeader } from "@/components/app-header";
+import { GuestSessionBanner } from "@/components/guest-session-banner";
 
 function HeaderFallback() {
   return (
@@ -13,8 +14,14 @@ function HeaderFallback() {
 }
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const { role, isAuthenticated, signOut, accountType, membershipRole } =
-    useApp();
+  const {
+    role,
+    isAuthenticated,
+    signOut,
+    accountType,
+    membershipRole,
+    isGuest,
+  } = useApp();
 
   return (
     <>
@@ -25,8 +32,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           onSignOut={signOut}
           accountType={accountType}
           membershipRole={membershipRole}
+          isGuest={isGuest}
         />
       </Suspense>
+
+      <GuestSessionBanner />
 
       <main id="main-content" className="min-h-[calc(100vh-4rem)]">
         {children}
